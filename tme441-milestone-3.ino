@@ -4,7 +4,7 @@
 *  This template includes example code to test your stepper and servo motors.
 *  Once you are done testing, you should create your own Arduino sketch and
 *  import the rest of your reusable code (motor_control.h and other *.ino files).
-*
+* 
 *  @author Matthew Ford
 *  @version 2026
 */
@@ -16,7 +16,7 @@ volatile bool swPressed = false;  // Flag to indicate if the limit switch is pre
 
 // Initialize stepper motor with 2048 steps per revolution
 // Replace In1, In2, In3, In4 with the pin numbers connected to the stepper motor driver
-Stepper stm(2048, In1, In3, In2, In4);
+Stepper stm(2048, 22, 26, 24, 28);
 
 // Initialize servo motor
 Servo svm;
@@ -33,7 +33,7 @@ int main() {
   corresponding to 0 and 180 degrees. If your servo motor does not turn far
   enough, try adjusting these values.
    */
-  svm.attach(PIN, 500, 2500);
+  svm.attach(52, 500, 2500);
 
   // Testing functions. Uncomment the one you want to test.
   testStepperMotor();
@@ -117,8 +117,8 @@ void toggleSwitch() {
  * @return Range to target in centimeters
  */
 int rangeToTarget() {
-  const int TRIG = 2;  // Pin connected to the ultrasonic sensor TRIG
-  const int ECHO = 3;  // Pin connected to the ultrasonic sensor ECHO
+  const int TRIG = 47;  // Purple Wire Pin connected to the ultrasonic sensor TRIG
+  const int ECHO = 45;  // Pin connected to the ultrasonic sensor ECHO
 
   pinMode(TRIG, OUTPUT);
   pinMode(ECHO, INPUT);
