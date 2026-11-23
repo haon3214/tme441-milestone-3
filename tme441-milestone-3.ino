@@ -4,7 +4,7 @@
 *  This template includes example code to test your stepper and servo motors.
 *  Once you are done testing, you should create your own Arduino sketch and
 *  import the rest of your reusable code (motor_control.h and other *.ino files).
-* //test
+* 
 *  @author Matthew Ford
 *  @version 2026
 */
@@ -21,9 +21,7 @@ Stepper stm(2048, 22, 26, 24, 28);
 // Initialize servo motor
 Servo svm;
 
-int main() {
-  init();
-
+void setup() {
   // Initialize communication interfaces
   Serial.begin(115200);  // USB serial for debugging
 
@@ -32,14 +30,57 @@ int main() {
   The second and third parameters specify the minimum and maximum pulse widths
   corresponding to 0 and 180 degrees. If your servo motor does not turn far
   enough, try adjusting these values.
-   
+   */
   svm.attach(52, 500, 2500);
+  
+  //Drive Function here
+  driveFunction();
+}
 
+//Drive function that navigates the robot 
+void driveFunction(){
+  while (rangeToTarget() > 5);  // Drive until the robot is within 20 cm of the target
+  driveDistance(50);  // Drive forward 50 cm
+}
+
+/**
+ * Take 10 range measurements and return the average without the lowest and highest values.
+ * @return Average distance in centimeters
+ */
+float rangeToFind() {
+  int distances[10];
+
+  for (int i = 0; i < 10; i++) {
+    distances[i] = rangeToTarget();
+    delay(50);
+  }
+
+  // Sort the measurements from smallest to largest
+  for (int i = 0; i < 10 - 1; i++) {
+    for (int j = i + 1; j < 10; j++) {
+      if (distances[j] < distances[i]) {
+        int temp = distances[i];
+        distances[i] = distances[j];
+        distances[j] = temp;
+      }
+    }
+  }
+
+  // Exclude the minimum and maximum values, then average the remaining 8
+  long sum = 0;
+  for (int i = 1; i < 9; i++) {
+    sum += distances[i];
+  }
+
+  return sum / 8.0;
+}
+
+
+void loop() {
   // Testing functions. Uncomment the one you want to test.
-  //testStepperMotor();
-  testServoMotor();
-  //testRangeSensor();
-
+  // testStepperMotor();
+  //testServoMotor();
+  // testRangeSensor();
 }
 
 /*******************************************************************************
@@ -68,13 +109,14 @@ void testServoMotor() {
 }
 
 // Get range to target with ultrasonic sensor and print to serial monitor
-void testRangeSensor() {
+int testRangeSensor() {
   while (true) {
     int range = rangeToTarget();
     Serial.print("Range to target: ");
     Serial.print(range);
     Serial.println(" cm");
     delay(1000);
+
   }
 }
 
