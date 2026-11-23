@@ -4,7 +4,7 @@
 *  This template includes example code to test your stepper and servo motors.
 *  Once you are done testing, you should create your own Arduino sketch and
 *  import the rest of your reusable code (motor_control.h and other *.ino files).
-* 
+* //test
 *  @author Matthew Ford
 *  @version 2026
 */
@@ -32,12 +32,12 @@ int main() {
   The second and third parameters specify the minimum and maximum pulse widths
   corresponding to 0 and 180 degrees. If your servo motor does not turn far
   enough, try adjusting these values.
-   */
+   
   svm.attach(52, 500, 2500);
 
   // Testing functions. Uncomment the one you want to test.
-  testStepperMotor();
-  //testServoMotor();
+  //testStepperMotor();
+  testServoMotor();
   //testRangeSensor();
 
 }
