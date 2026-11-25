@@ -23,7 +23,7 @@ void driveDistance(float distanceCm) {
 
   // Desired speeds in encoder ticks per second
   const long minSpeed = 500;
-  const long maxSpeed = 1500;
+  const long maxSpeed = 1250;
 
 
   // Each ramp covers 20% of the total distance

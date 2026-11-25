@@ -10,6 +10,9 @@
 */
 #include <Stepper.h>
 #include <Servo.h>
+#include <Encoder.h>
+#include "motor_control.h"
+
 
 // Global variables for the stepper motor homing function (see below)
 volatile bool swPressed = false;  // Flag to indicate if the limit switch is pressed
@@ -34,21 +37,40 @@ void setup() {
   svm.attach(52, 500, 2500);
   
   //Drive Function here
-  driveFunction();
+  //driveFunction(); // drive to the block
+  servoClamp(); // grabs the block with the servo motor
 }
 
 //Drive function that navigates the robot 
-void driveFunction(){
-  while (rangeToTarget() > 5);  // Drive until the robot is within 20 cm of the target
-  driveDistance(50);  // Drive forward 50 cm
-}
+void driveFunction() {
+  Serial.println("Measuring distance");
 
+  float distance = rangeToFind();
+
+  Serial.println(distance);
+
+  //driveDistance(distance - 1);
+
+  Serial.println("Drive complete");
+
+  delay(1000);
+}
+ // Copilot Gen 
+ //pos is ccw, neg is cw
+void servoClamp(){
+  while (true){
+  svm.write(70);    // Move servo to 90 degrees
+    delay(1000);     // Wait for servo to finish moving
+    //svm.write();  // Move servo to 180 degrees
+    delay(1000);
+  }
+}
 /**
  * Take 10 range measurements and return the average without the lowest and highest values.
  * @return Average distance in centimeters
  */
 float rangeToFind() {
-  int distances[10];
+  float distances[10]; //changed from int to float for accuracy
 
   for (int i = 0; i < 10; i++) {
     distances[i] = rangeToTarget();
@@ -59,7 +81,7 @@ float rangeToFind() {
   for (int i = 0; i < 10 - 1; i++) {
     for (int j = i + 1; j < 10; j++) {
       if (distances[j] < distances[i]) {
-        int temp = distances[i];
+        float temp = distances[i];
         distances[i] = distances[j];
         distances[j] = temp;
       }
@@ -67,7 +89,7 @@ float rangeToFind() {
   }
 
   // Exclude the minimum and maximum values, then average the remaining 8
-  long sum = 0;
+  float sum = 0;
   for (int i = 1; i < 9; i++) {
     sum += distances[i];
   }
@@ -158,7 +180,7 @@ void toggleSwitch() {
  * Measure range to target with ultrasonic sensor
  * @return Range to target in centimeters
  */
-int rangeToTarget() {
+float rangeToTarget() { //changed to float
   const int TRIG = 47;  // Purple Wire Pin connected to the ultrasonic sensor TRIG
   const int ECHO = 45;  // Pin connected to the ultrasonic sensor ECHO
 
